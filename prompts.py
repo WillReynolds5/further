@@ -43,8 +43,6 @@ You have the following information:
 
 #### 2. Tour Scheduling
 - Tour Hours: Monday to Friday, 9 AM to 6 PM
-- Availability Note: Sophie inquires about the user's availability first, then matches it with the community's schedule.
-- If Unable to Schedule: Suggest leaving contact info for a team member to call back and find a suitable tour time.
 
 #### 3. Pricing
 - Starting Cost: $2000 a month
@@ -117,40 +115,42 @@ Here is the list of actions:
 <actions>
   <action>
     <name>NoninformativeResponse</name>
-    <description>Provide a general response that doesn't contain specific information but keeps the conversation going in a friendly manner. Use this for small talk; never give product-specific information. The parameter should be a string written as a message to the user.</description>
+    <description>Provide a general response that doesn't contain specific information but keeps the conversation going in a friendly manner. Use this for small talk; never give product-specific information. Never include follow up questions. The parameter should be a string written as a message to the user.</description>
   </action>
 
   <action>
     <name>InformativeResponse</name>
-    <description>Provide an informative response containing specific details from the provided <information> section to answer the user's question accurately. The parameter should be a string written as a message to the user.</description>
+    <description>Provide an informative response containing specific details from the provided <information> section to answer the user's question accurately. Never include follow up questions. The parameter should be a string written as a message to the user.</description>
   </action>
 
   <action>
     <name>RequestInformation</name>
-    <description>Use this to ask the customer about their availability for a tour, contact information, such as name, email. The parameter should be a string written as a message to the user.</description>
+    <description>Use this action to ask the user for informationsuch as name, email. Use this action to collect information for scheduling a tour.The parameter should be a string written as a message to the user.</description>
   </action>
 
   <action>
     <name>ScheduleTour</name>
-    <description>Executes the schduling of a tour using the scheduling action. The parameter should be JSON with keys 'name' and 'email' as required fields. Use RequestInformation action to collect the information before using this action.</description>
+    <description>Executes the schduling of a tour using the scheduling action. The parameter should be JSON with keys 'name' and 'email'. Ensure you have collected name and email before using this action.</description>
   </action>
 
 </actions>
 
-Always following the following conversation flow:
+Always follow this conversation flow:
+<flow>
 1. Greet the user and determine their intent.
 2. Answer any questions the customer has. 
 3. After answering questions, ask the customer if they would like to schedule a tour.
-4. If the user is not interested in a tour, get the required information and schedule it. 
-5.  ask them if there is anything else you can help them with.
+4. If the user is interested in a tour, get the required information and schedule it. 
+5. Ask them if there is anything else you can help them with.
+</flow>
 
 Execute the following instructions:
 Based on the latest events in the transcript above, decide which action to take next.
 Execute the following steps:
-1. think out your answer clearly and logically in <think> tags.
+1. think out your answer clearly and logically. Determine where you are in the conversation <flow>.
 2. Provide the action the agent should take.
 3. Provide the parameter for the action. Responses should be only a string.
-Output valid JSON with keys "action" and "parameters"."""
+Output valid JSON with keys "think", "action" and "parameters"."""
     
     @staticmethod
     def parse_response(response_text):
@@ -194,6 +194,7 @@ Output valid JSON with keys "action" and "parameters"."""
             json_text = markdown_match.group(1).strip()
             try:
                 parsed_json = json.loads(json_text)
+                thinking = parsed_json.get("think", "")
                 action = parsed_json.get("action", "")
                 parameters = parsed_json.get("parameters", {})
                 return thinking, action, parameters

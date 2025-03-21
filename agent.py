@@ -31,9 +31,10 @@ class FurtherAgent:
             thinking, action, parameter = FurtherPrompt.parse_response(raw_response)
             
             # Log the action and parameters for debugging
+            print(f"Thinking: {thinking}")
             print(f"Action: {action}")
             print(f"Parameters: {parameter}")
-            
+                        
             # Process different action types
             if action == 'InformativeResponse':
                 response = parameter
@@ -47,13 +48,16 @@ class FurtherAgent:
             elif action == 'ScheduleTour':
                 response = f"RUNNING SCHEDULE TOOL W/ PARAMTERS: {parameter}"
                 
+            elif action == 'CheckAvailability':
+                response = parameter
+                
             elif action == 'parsing_error':
                 # If parsing failed, just return the raw response
                 response = raw_response
             else:
                 # For other or unknown actions, return a generic response
                 response = parameter
-                
+
             # Return both the final response message and the thinking process
             return {
                 "message": response,
