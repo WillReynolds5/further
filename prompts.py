@@ -132,7 +132,7 @@ Here is the list of actions:
 
   <action>
     <name>ScheduleTour</name>
-    <description>Help the user schedule a tour of ACME Senior Living facility. This involves collecting necessary information like preferred date/time and contact details. The parameter should be a JSON string containing the information with 'name' and 'email' as fields.</description>
+    <description>Help the user schedule a tour of ACME Senior Living facility. This involves collecting necessary information like preferred date/time and contact details. The parameter should be JSON with keys 'name' and 'email' as fields. Use RequestInformation action to collect the information before using this action.</description>
   </action>
 
 </actions>
